@@ -12,7 +12,7 @@ const init = connection => {
   };
 
   return {
-    create,
+    create
   }
 
 }
