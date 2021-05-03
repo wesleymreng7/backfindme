@@ -7,7 +7,7 @@ const verifyToken = async (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    req.franchise_id = decoded.data.franchise_id
+    req.contributor = decoded.data.id
     next();
   } catch (error) {
     res.send({

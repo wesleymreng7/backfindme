@@ -20,19 +20,19 @@ const init = connection => {
             const filters = [];
             if (params.clientId) {
                 filters.push('os.client_id = ?');
-                filterParams.push(clientId)
+                filterParams.push(params.clientId)
             }
             if (params.contributorId) {
                 filters.push('os.contributor_id = ?');
-                filterParams.push(contributorId)
+                filterParams.push(params.contributorId)
             }
             if (params.startDate) {
-                filters.push('os.created >= ?');
-                filterParams.push(startDate)
+                filters.push('os.created_at >= ?');
+                filterParams.push(params.startDate)
             }
             if (params.endDate) {
                 filters.push('os.created_at <= ?');
-                filterParams.push(endDate);
+                filterParams.push(params.endDate);
             }
 
 
@@ -42,16 +42,16 @@ const init = connection => {
 
 
 
-            sql1 = `SELECT COUNT(*) AS total FROM order_services os' ${sqlFilter}`;
+            sql1 = `SELECT COUNT(*) AS total FROM order_services os ${sqlFilter}`;
 
 
-            let sql2 = `SELECT os.* FROM order_services os INNER JOIN client c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id ${sqlFilter} ORDER BY os.created_at ?, os.client_id ?, os.contributor_id ? LIMIT ?, ?`;
+            let sql2 = `SELECT os.* FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id ${sqlFilter} ORDER BY os.created_at ${params.orderByDate.toString()}, os.client_id ${params.orderByClientId.toString()}, os.contributor_id ${params.orderByContributorId.toString()} LIMIT ?, ?`;
 
             const [result] = await connection.execute(sql1, [...filterParams]);
             const total = result[0].total;
             const totalPages = parseInt(total / pageSize);
 
-            const [oss, fields] = await connection.execute(sql2, [...filterParams, params.orderByDate.toString(), params.orderByClientId.toString(), params.orderByContributorId.toString(), offset.toString(), pageSize.toString()]);
+            const [oss, fields] = await connection.execute(sql2, [...filterParams, offset.toString(), pageSize.toString()]);
             return {
                 data: oss,
                 pagination: {
@@ -68,7 +68,7 @@ const init = connection => {
 
     const findInCurrentMonth = async () => {
         try {
-            const sql = 'SELECT os.* FROM order_services os INNER JOIN client c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id WHERE MONTH(os.created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())';
+            const sql = 'SELECT os.* FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id WHERE MONTH(os.created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())';
             const [rows] = await connection.execute(sql, []);
             return rows;
         } catch (error) {

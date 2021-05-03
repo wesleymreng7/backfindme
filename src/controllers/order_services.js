@@ -1,17 +1,26 @@
 const auth = require('../utils/auth')
 
-const create = async ({ Contributors }, req, res) => {
+const create = async ({ OrderServices }, req, res) => {
     try {
-        let { name, email, password } = req.body;
+        const { description, clientId, location } = req.body;
 
-        password = await auth.setPassword(password);
+        const contributorId = req.contributor
 
-        const contributorId = await Contributors.create({ name, email, password });
+        const toInsert = {
+            description,
+            clientId,
+            contributorId,
+            location,
+            createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        };
+
+
+        const orderServiceId = await OrderServices.create(toInsert);
 
         res.send({
             status: 200,
-            data: contributorId,
-            message: 'Colaborador cadastrado com sucesso!'
+            data: orderServiceId,
+            message: 'OS cadastrada com sucesso!'
         });
 
     } catch (error) {
@@ -22,17 +31,43 @@ const create = async ({ Contributors }, req, res) => {
     }
 }
 
-const create = async ({ Contributors }, req, res) => {
+const getAll = async ({ OrderServices }, req, res) => {
     try {
-        let { name, email, password } = req.body;
+        
+        const { currentPage, pageSize } = req.params;
+        const { clientId, contributorId, startDate, endDate, orderByDate, orderByClientId, orderByContributorId } = req.query
 
-        password = await auth.setPassword(password);
-
-        const contributorId = await Contributors.create({ name, email, password });
+        const oss = await OrderServices.findAll({
+            currentPage,
+            pageSize,
+            clientId,
+            contributorId,
+            startDate, endDate, orderByDate, orderByClientId, orderByContributorId
+        })
 
         res.send({
             status: 200,
-            data: contributorId,
+            data: oss,
+            message: ''
+        });
+
+    } catch (error) {
+        res.send({
+            status: 400,
+            error: error.message,
+        });
+    }
+}
+
+const getByMonth = async ({ OrderServices }, req, res) => {
+    try {
+        
+
+        const oss = await OrderServices.findInCurrentMonth();
+
+        res.send({
+            status: 200,
+            data: oss,
             message: 'Colaborador cadastrado com sucesso!'
         });
 
@@ -45,5 +80,7 @@ const create = async ({ Contributors }, req, res) => {
 }
 
 module.exports = {
-    create
+    create,
+    getAll,
+    getByMonth
 };
