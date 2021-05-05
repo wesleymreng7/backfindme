@@ -15,7 +15,7 @@ const init = connection => {
     try {
       const sql =
         "SELECT * FROM clients";
-      const [rows] = await connection.execute(sql, [data.name]);
+      const [rows] = await connection.execute(sql, []);
       return rows;
     } catch (error) {
       throw error;
@@ -25,7 +25,7 @@ const init = connection => {
   const updateOne = async (data, id) => {
     try {
       const sql =
-        "UPDATE FROM clients SET name = ? WHERE id = ?";
+        "UPDATE clients SET name = ? WHERE id = ?";
       const [rows] = await connection.execute(sql, [data.name, id]);
       return rows[0];
     } catch (error) {

@@ -40,6 +40,7 @@ const getAll = async ({ Clients }, req, res) => {
 const update = async ({ Clients }, req, res) => {
   try {
 
+    console.log(req.params, req.body);
     const { clientId } = req.params;
     const { name } = req.body
     const client = await Clients.updateOne({ name }, clientId);

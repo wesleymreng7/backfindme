@@ -31,7 +31,7 @@ try {
         })
     );
     app.use('/images', express.static(__dirname + '/images'));
-    app.use(express.json())
+    app.use(express.json());
     app.use('/v1/clients', clients(models));
     app.use('/v1/contributors', contributors(models));
     app.use('/v1/order-services', orderServices(models));
