@@ -30,14 +30,13 @@ try {
             exposedHeaders: ['Business'],
         })
     );
-    app.use('/images', express.static(__dirname + '/images'));
     app.use(express.json());
     app.use('/v1/clients', clients(models));
     app.use('/v1/contributors', contributors(models));
     app.use('/v1/order-services', orderServices(models));
 
     app.listen(port,  async () => {
-        console.log('CRUD listening on port: ' + port);
+        console.log('Server running on port: ' + port);
     });
 
 } catch (e) {

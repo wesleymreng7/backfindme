@@ -53,7 +53,7 @@ const init = connection => {
 
     const findLastLocation = async () => {
       try {
-        const sql = 'SELECT * FROM contributors c INNER JOIN (SELECT MAX(id) max_id, contributor_id, location, contributor_id FROM order_services GROUP BY contributor_id) c_max ON(c_max.contributor_id = c.id)';
+        const sql = 'SELECT * FROM contributors c INNER JOIN (SELECT MAX(os.id) max_id, os.contributor_id, os.location FROM order_services os GROUP BY contributor_id, location) c_max ON(c_max.contributor_id = c.id)';
         const [rows] = await connection.execute(sql, []);
         return rows;
       } catch (error) {
