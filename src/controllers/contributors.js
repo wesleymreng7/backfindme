@@ -59,25 +59,87 @@ const login = async ({ Contributors }, req, res) => {
 
 const getLastOs = async ({ Contributors }, req, res) => {
     try {
-  
-      const lastLocations = await Contributors.findLastLocation();
-  
-      res.send({
-        status: 200,
-        data: lastLocations,
-        message: 'Dados recuperados!'
-      })
-  
+
+        const lastLocations = await Contributors.findLastLocation();
+
+        res.send({
+            status: 200,
+            data: lastLocations,
+            message: 'Dados recuperados!'
+        })
+
     } catch (error) {
-      res.send({
-        status: 400,
-        error: error.message,
-      })
+        res.send({
+            status: 400,
+            error: error.message,
+        })
     }
-  }
+}
+const getAll = async ({ Contributors }, req, res) => {
+    try {
+
+        const contributors = await Contributors.findAll();
+
+        res.send({
+            status: 200,
+            data: contributors,
+            message: 'Dados recuperados com sucesso!'
+        })
+
+    } catch (error) {
+        res.send({
+            status: 400,
+            error: error.message,
+        })
+    }
+}
+
+const update = async ({ Contributors }, req, res) => {
+    try {
+
+        const { contributorId } = req.params;
+        const { name } = req.body
+        const contributor = await Contributors.updateOne({ name }, contributorId);
+
+        res.send({
+            status: 200,
+            data: contributor,
+            message: 'Colaborador cadastrado com sucesso!'
+        })
+
+    } catch (error) {
+        res.send({
+            status: 400,
+            error: error.message,
+        })
+    }
+}
+
+const deleteOne = async ({ Contributors }, req, res) => {
+    try {
+
+        const { contributorId } = req.params;
+        const contributor = await Contributors.remove(contributorId);
+
+        res.send({
+            status: 200,
+            data: contributor,
+            message: 'Colaborador cadastrado com sucesso!'
+        })
+
+    } catch (error) {
+        res.send({
+            status: 400,
+            error: error.message,
+        })
+    }
+}
 
 module.exports = {
     create,
     login,
-    getLastOs
+    getLastOs,
+    getAll,
+    update,
+    deleteOne
 };

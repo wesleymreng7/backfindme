@@ -3,8 +3,8 @@ const init = connection => {
     const create = async data => {
       try {
         const sql =
-          "INSERT INTO order_services (created_at, description, client_id, contributor_id, location) VALUES (?, ?, ?, ?, ?)";
-        const [rows] = await connection.execute(sql, [data.createdAt, data.description, data.clientId, data.contributorId, data.location]);
+          "INSERT INTO contributors (name, email, password) VALUES (?, ?, ?)";
+        const [rows] = await connection.execute(sql, [data.name, data.email, data.password]);
         return rows.insertId;
       } catch (error) {
         throw error;
@@ -15,6 +15,36 @@ const init = connection => {
       try {
         const sql = 'SELECT * FROM contributors WHERE email = ?';
         const [rows] = await connection.execute(sql, [data.email]);
+        return rows;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    const findAll = async () => {
+      try {
+        const sql = 'SELECT * FROM contributors';
+        const [rows] = await connection.execute(sql, []);
+        return rows;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    const updateOne = async (data, id) => {
+      try {
+        const sql = 'UPDATE contributors SET name = ? WHERE id = ?';
+        const [rows] = await connection.execute(sql, [data.name, id]);
+        return rows;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    const remove = async (id) => {
+      try {
+        const sql = 'DELETE FROM contributors WHERE id = ?';
+        const [rows] = await connection.execute(sql, [id]);
         return rows;
       } catch (error) {
         throw error;
@@ -34,7 +64,10 @@ const init = connection => {
     return {
       create,
       findLastLocation,
-      findOneByEmail
+      findOneByEmail,
+      updateOne,
+      remove,
+      findAll
     }
   
   }
