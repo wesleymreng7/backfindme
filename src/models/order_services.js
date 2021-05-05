@@ -45,7 +45,7 @@ const init = connection => {
             sql1 = `SELECT COUNT(*) AS total FROM order_services os ${sqlFilter}`;
 
 
-            let sql2 = `SELECT os.* FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id ${sqlFilter} ORDER BY os.created_at ${params.orderByDate.toString()}, os.client_id ${params.orderByClientId.toString()}, os.contributor_id ${params.orderByContributorId.toString()} LIMIT ?, ?`;
+            let sql2 = `SELECT os.*, c.name AS client_name, co.name AS contributor_name FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id ${sqlFilter} ORDER BY os.created_at ${params.orderByDate.toString()}, os.client_id ${params.orderByClientId.toString()}, os.contributor_id ${params.orderByContributorId.toString()} LIMIT ?, ?`;
 
             const [result] = await connection.execute(sql1, [...filterParams]);
             const total = result[0].total;
@@ -57,8 +57,9 @@ const init = connection => {
                 pagination: {
                     pages: totalPages,
                     pageSize,
-                    currentPage: parseInt(params.currentPage)
-                }
+                    currentPage: parseInt(params.currentPage),
+                },
+                total: result ? result.length : 0
             };
 
         } catch (e) {
@@ -68,7 +69,7 @@ const init = connection => {
 
     const findInCurrentMonth = async () => {
         try {
-            const sql = 'SELECT os.* FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id WHERE MONTH(os.created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())';
+            const sql = 'SELECT count(os.id) AS total, DAY(os.created_at) AS day FROM order_services os INNER JOIN clients c ON c.id = os.client_id INNER JOIN contributors co ON co.id = os.contributor_id WHERE MONTH(os.created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) GROUP BY day';
             const [rows] = await connection.execute(sql, []);
             return rows;
         } catch (error) {
