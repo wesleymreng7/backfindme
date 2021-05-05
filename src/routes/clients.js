@@ -5,6 +5,9 @@ const clientsController = require("../controllers/clients");
 const clientsRouter = ({ Clients }) => {
   const router = express.Router();
   router.post("/", clientsController.create.bind(null, { Clients }));
+  router.get("/", clientsController.getAll.bind(null, { Clients }));
+  router.delete("/", clientsController.deleteOne.bind(null, { Clients }));
+  router.put("/", clientsController.update.bind(null, { Clients }));
 
   return router;
 };
