@@ -26,7 +26,7 @@ const getAll = async ({ Clients }, req, res) => {
     res.send({
       status: 200,
       data: clients,
-      message: 'Cliente cadastrado com sucesso!'
+      message: 'Clientes recuperados com sucesso!'
     })
 
   } catch (error) {

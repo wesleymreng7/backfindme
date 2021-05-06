@@ -39,7 +39,7 @@ const login = async ({ Contributors }, req, res) => {
         }
         const token = jwt.sign(
             {
-                exp: Math.floor(Date.now() / 1000) + 2880 * 60,
+                //exp: Math.floor(Date.now() / 1000) + 2880 * 60,
                 data: { id: userRow[0].id, email: userRow[0].email, name: userRow[0].name },
             },
             process.env.JWT_SECRET
